@@ -14,7 +14,7 @@ build: ## Build
 	go build -o cvwonder ./cmd/cvwonder
 
 doc-install:
-	cd docs && poetry lock && poetry install
+	poetry --directory docs/ lock && poetry --directory docs/ install
 
 doc:
-	cd docs && poetry run python -m mkdocs serve
+	poetry --directory docs/ run python -m mkdocs serve --config-file docs/mkdocs.yml

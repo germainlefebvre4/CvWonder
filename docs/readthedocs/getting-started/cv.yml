@@ -24,10 +24,13 @@ socialNetworks:
   twitter: germainlefebvr4
 
 abstract:
-  - tr: "I am a Platform Engineer looking for people to share knowledge each other."
+  - tr: "I am a Platform Engineer looking for people to share knowledge to each other."
+  - tr: "This section can be a mulitples lines of text."
+  - tr: "This section can be a mulitples lines of text again."
 
 career:
   - companyName: Zatsit
+    companyLogo: images/zatsit-logo.webp
     duration: 10 mois, aujourd'hui
     missions:
       - position: Platform Engineer

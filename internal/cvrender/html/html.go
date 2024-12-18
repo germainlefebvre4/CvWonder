@@ -44,25 +44,29 @@ func GenerateFormatHTML(cv model.CV, outputDirectory string, inputFilename strin
 		utils.CheckError(err)
 	}
 	outputFile, err := os.Create(outputFilePath)
-	outputTmpFile, err := os.Create(outputTmpFilePath)
 	utils.CheckError(err)
-	// var outputTmpFile *os.File
-	// if _, err := os.Stat(outputTmpFilePath); errors.Is(err, os.ErrNotExist) {
-	// 	outputTmpFile, err = os.Create(outputTmpFilePath)
-	// 	utils.CheckError(err)
-	// } else {
-	// 	outputTmpFile, err = os.OpenFile(outputTmpFilePath, os.O_WRONLY, 0644)
-	// 	utils.CheckError(err)
-	// }
+	var outputTmpFile *os.File
+	if _, err := os.Stat(outputTmpFilePath); errors.Is(err, os.ErrNotExist) {
+		outputTmpFile, err = os.Create(outputTmpFilePath)
+		utils.CheckError(err)
+	} else {
+		outputTmpFile, err = os.OpenFile(outputTmpFilePath, os.O_WRONLY, 0644)
+		utils.CheckError(err)
+	}
 
 	// Generate output
 	err = tmpl.ExecuteTemplate(outputTmpFile, "index.html", cv)
 	utils.CheckError(err)
 
-	// Copy file content - Method 2
+	// Copy file content from tmp to final
+	// This approach avoid flooding file events in the watcher
 	input, err := os.ReadFile(outputTmpFilePath)
 	utils.CheckError(err)
 	err = os.WriteFile(outputFilePath, input, 0644)
+	utils.CheckError(err)
+
+	// Clean the tmp file
+	err = os.Remove(outputTmpFilePath)
 	utils.CheckError(err)
 
 	logrus.Debug("HTML file generated at:", outputFile)

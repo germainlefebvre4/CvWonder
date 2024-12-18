@@ -83,7 +83,7 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - markdown_include.include:
-      base_path: readthedocs
+      base_path: docs/readthedocs
 
 
 extra:

@@ -21,3 +21,13 @@ themes
 ```bash
 cvwonder generate --input=cv.yml --output=generated/ --theme=default
 ```
+
+### Render
+
+![CVWonder Default Theme Render](./theme-default.png)
+
+### CV input
+
+```yaml
+{!getting-started/cv.yml!}
+```
