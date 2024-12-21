@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func ObserveFileEvents(outputDirectory string, inputFilePath string, themeName string) {
+func ObserveFileEvents(outputDirectory string, inputFilePath string, themeName string, exportFormat string) {
 	// setup watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -31,7 +31,7 @@ func ObserveFileEvents(outputDirectory string, inputFilePath string, themeName s
 					content, err := cvparser.ParseFile(inputFilePath)
 					utils.CheckError(err)
 
-					cvrender.Render(content, outputDirectory, inputFilePath, themeName)
+					cvrender.Render(content, outputDirectory, inputFilePath, themeName, exportFormat)
 					utils.CheckError(err)
 				}
 			case err := <-watcher.Errors:
