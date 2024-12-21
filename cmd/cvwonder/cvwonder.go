@@ -49,12 +49,13 @@ func main() {
 			logrus.Info("  Input file: ", inputFile.RelativePath)
 			logrus.Info("  Output directory: ", outputDir.RelativePath)
 			logrus.Info("  Theme: ", utils.CliArgs.ThemeName)
+			logrus.Info("  Format: ", utils.CliArgs.Format)
 			logrus.Info()
 
 			content, err := cvparser.ParseFile(inputFile.FullPath)
 			utils.CheckError(err)
 
-			cvrender.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName)
+			cvrender.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			utils.CheckError(err)
 		},
 	}
@@ -80,27 +81,29 @@ func main() {
 			logrus.Info("  Input file: ", inputFile.RelativePath)
 			logrus.Info("  Output directory: ", outputDir.RelativePath)
 			logrus.Info("  Theme: ", utils.CliArgs.ThemeName)
+			logrus.Info("  Format: ", utils.CliArgs.Format)
 			logrus.Info("  Watch: ", utils.CliArgs.Watch)
 			logrus.Info()
 
 			content, err := cvparser.ParseFile(inputFile.FullPath)
 			utils.CheckError(err)
 
-			cvrender.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName)
+			cvrender.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			utils.CheckError(err)
 
 			if utils.CliArgs.Watch {
-				go watcher.ObserveFileEvents(outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName)
+				go watcher.ObserveFileEvents(outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			}
 			cvserve.OpenBrowser()
 			cvserve.StartLiveReloader(outputDir.FullPath)
 		},
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.InputFile, "input", "i", "cv.yml", "Input file in YAML format (required)")
-	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.OutputDirectory, "output", "o", "generated/", "Output directory (optional)")
-	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.ThemeName, "theme", "t", "default", "Name of the theme (optional)")
-	rootCmd.PersistentFlags().BoolVarP(&utils.CliArgs.Verbose, "verbose", "v", false, "Verbose mode")
+	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.InputFile, "input", "i", "cv.yml", "Input file in YAML format (required). Default is 'cv.yml'")
+	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.OutputDirectory, "output", "o", "generated/", "Output directory (optional). Default is 'generated/'")
+	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.ThemeName, "theme", "t", "default", "Name of the theme (optional). Default is 'default'.")
+	rootCmd.PersistentFlags().StringVarP(&utils.CliArgs.Format, "format", "f", "html", "Format for the export (optional). Default is 'html'.")
+	rootCmd.PersistentFlags().BoolVarP(&utils.CliArgs.Verbose, "verbose", "v", false, "Verbose mode.")
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(serveCmd)
 	serveCmd.PersistentFlags().BoolVarP(&utils.CliArgs.Watch, "watch", "w", false, "Watch for file changes")

@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func GenerateFormatHTML(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
+func RenderFormatHTML(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
 	logrus.Debug("Generating HTML")
 
 	// Theme directory
