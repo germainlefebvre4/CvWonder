@@ -13,7 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func RenderFormatHTML(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
+func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
 	logrus.Debug("Generating HTML")
 
 	// Theme directory
@@ -29,7 +29,7 @@ func RenderFormatHTML(cv model.CV, outputDirectory string, inputFilename string,
 	outputTmpFilePath := outputFilePath + ".tmp"
 
 	// Generate template file
-	err = generateTemplateFile(themeDirectory, outputDirectory, outputFilePath, outputTmpFilePath, cv)
+	err = r.generateTemplateFile(themeDirectory, outputDirectory, outputFilePath, outputTmpFilePath, cv)
 	utils.CheckError(err)
 
 	// Copy template file to output directory
@@ -52,7 +52,7 @@ func getTemplateFunctions() template.FuncMap {
 	return funcMap
 }
 
-func generateTemplateFile(themeDirectory string, outputDirectory string, outputFilePath string, outputTmpFilePath string, cv model.CV) error {
+func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputDirectory string, outputFilePath string, outputTmpFilePath string, cv model.CV) error {
 	// Inject custom functions in template
 	funcMap := getTemplateFunctions()
 

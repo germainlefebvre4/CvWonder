@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/sirupsen/logrus"
 )
@@ -55,6 +56,10 @@ func CopyDirectory(scrDir string, dest string) error {
 	if err != nil {
 		return err
 	}
+	// Cleanup the .git/ dir
+	if ok, _ := regexp.MatchString(".git", scrDir); ok {
+		return nil
+	}
 	for _, entry := range entries {
 		sourcePath := filepath.Join(scrDir, entry.Name())
 		destPath := filepath.Join(dest, entry.Name())
@@ -77,8 +82,11 @@ func CopyDirectory(scrDir string, dest string) error {
 				return err
 			}
 		default:
-			// Exclude the templated index.html theme file from copying
+			// Exclude the templated index.html theme file and path with .git/ dir from copying
 			if destPath == filepath.Join(dest, "index.html") {
+				continue
+			}
+			if ok, _ := regexp.MatchString(".git", destPath); ok {
 				continue
 			}
 			if err := Copy(sourcePath, destPath); err != nil {
