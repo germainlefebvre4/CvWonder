@@ -12,6 +12,7 @@ test_CV.y*ml
 test.y*ml
 test.html
 test.pdf
+/generated-test/
 
 # Themes
 /themes/

@@ -9,7 +9,7 @@
             "cwd": "${workspaceFolder}",
             "program": "./cmd/cvwonder",
             "args": [
-                // "generate",
+                "generate",
                 // "serve",
                 // "--input=cv.yml",
                 // "--output=generated/",
@@ -18,8 +18,8 @@
                 // "--watch",
                 // "--verbose",
 
-                "themes",
-                "list",
+                // "themes",
+                // "list",
 
                 // "themes",
                 // "install",
