@@ -13,16 +13,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
+func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, baseDirectory string, outputDirectory string, inputFilename string, themeName string) error {
 	logrus.Debug("Generating HTML")
 
 	// Theme directory
-	currentDirectory, err := os.Getwd()
-	utils.CheckError(err)
-	themeDirectory := filepath.Join(currentDirectory, "themes", themeName)
+	themeDirectory := filepath.Join(baseDirectory, "themes", themeName)
 
 	// Output file
-	outputDirectory, err = filepath.Abs(outputDirectory)
+	outputDirectory, err := filepath.Abs(outputDirectory)
 	utils.CheckError(err)
 	outputFilename := filepath.Base(inputFilename) + ".html"
 	outputFilePath := filepath.Join(outputDirectory, outputFilename)

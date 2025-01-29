@@ -68,7 +68,9 @@ func main() {
 			utils.CheckError(err)
 
 			// Render the CV
-			renderService.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
+			baseDirectory, err := os.Getwd()
+			utils.CheckError(err)
+			renderService.Render(content, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			utils.CheckError(err)
 
 			logrus.Info("CV generated successfully")
@@ -112,11 +114,13 @@ func main() {
 			utils.CheckError(err)
 
 			// Render the CV
-			renderService.Render(content, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
+			baseDirectory, err := os.Getwd()
+			utils.CheckError(err)
+			renderService.Render(content, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			utils.CheckError(err)
 
 			if utils.CliArgs.Watch {
-				go watcher.ObserveFileEvents(renderService, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
+				go watcher.ObserveFileEvents(renderService, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			}
 			cvserve.OpenBrowser(outputDir.FullPath, inputFile.FullPath)
 			cvserve.StartLiveReloader(outputDir.FullPath, inputFile.FullPath)

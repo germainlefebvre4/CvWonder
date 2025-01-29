@@ -95,6 +95,65 @@ func NewRenderHTMLServicesTest() RenderHTMLServices {
 	return RenderHTMLServices{}
 }
 
+func TestRenderFormatHTML(t *testing.T) {
+	testDirectory, _ := os.Getwd()
+	baseDirectory := testDirectory + "/../../.."
+	type fields struct {
+		RenderHTMLService RenderHTMLServices
+	}
+	type args struct {
+		cv              model.CV
+		baseDirectory   string
+		outputDirectory string
+		inputFilename   string
+		themeName       string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr error
+	}{
+		{
+			name:   "Should render HTML",
+			fields: fields{NewRenderHTMLServicesTest()},
+			args: args{
+				cv:              CvTest,
+				baseDirectory:   baseDirectory,
+				outputDirectory: baseDirectory + "/generated-test",
+				inputFilename:   "cv",
+				themeName:       "default",
+			},
+			wantErr: nil,
+		},
+	}
+	for _, tt := range tests {
+		// Prepare
+		// TODO: Add theme files
+
+		// Run test
+		t.Run(tt.name, func(t *testing.T) {
+			service := NewRenderHTMLServicesTest()
+			assert.Equalf(
+				t,
+				tt.wantErr,
+				service.RenderFormatHTML(tt.args.cv, tt.args.baseDirectory, tt.args.outputDirectory, tt.args.inputFilename, tt.args.themeName),
+				"RenderFormatHTML(%v, %v, %v, %v)",
+				tt.args.cv,
+				tt.args.outputDirectory,
+				tt.args.inputFilename,
+				tt.args.themeName,
+			)
+		})
+
+		// Clean
+		// err := os.RemoveAll(tt.args.outputDirectory)
+		// if err != nil {
+		// 	t.Fatal(err)
+		// }
+	}
+}
+
 func TestGetTemplateFunctions(t *testing.T) {
 	type args struct {
 	}

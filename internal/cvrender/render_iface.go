@@ -5,5 +5,5 @@ import (
 )
 
 type RenderInterface interface {
-	Render(cv model.CV, outputDirectory string, inputFilePath string, themeName string, exportFormat string)
+	Render(cv model.CV, baseDirectory string, outputDirectory string, inputFilePath string, themeName string, exportFormat string)
 }
