@@ -20,7 +20,7 @@ func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string,
 	outputFilePath := r.generateOutputFile(outputDirectory, inputFilename)
 
 	// Run the server to output the HTML
-	localServerUrl := r.runWebServer(inputFilename, outputDirectory)
+	localServerUrl := r.runWebServer(utils.CliArgs.Port, inputFilename, outputDirectory)
 
 	// Open the browser and convert the page to PDF
 	r.convertPageToPDF(localServerUrl, outputFilePath)
@@ -38,8 +38,12 @@ func (*RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath
 	}
 }
 
-func (*RenderPDFServices) runWebServer(inputFilename string, outputDirectory string) string {
-	localServerUrl := fmt.Sprintf("http://localhost:%d/%s.html", utils.CliArgs.Port, inputFilename)
+func (*RenderPDFServices) runWebServer(port int, inputFilename string, outputDirectory string) string {
+	if port == 0 {
+		port = 8080
+	}
+
+	localServerUrl := fmt.Sprintf("http://localhost:%d/%s.html", port, inputFilename)
 	logrus.Info("Serve temporary the CV on server at address ", localServerUrl)
 	go func() {
 		cvserve.StartServer(outputDirectory)
