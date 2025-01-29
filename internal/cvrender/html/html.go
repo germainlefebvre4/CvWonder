@@ -33,7 +33,7 @@ func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, outputDirectory strin
 	utils.CheckError(err)
 
 	// Copy template file to output directory
-	err = copyFileContent(outputTmpFilePath, outputFilePath)
+	err = copyTemplateFileContent(outputTmpFilePath, outputFilePath)
 	utils.CheckError(err)
 
 	// Copy theme assets to output directory
@@ -89,7 +89,7 @@ func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputD
 	return nil
 }
 
-func copyFileContent(outputTmpFilePath string, outputFilePath string) error {
+func copyTemplateFileContent(outputTmpFilePath string, outputFilePath string) error {
 	// Note: Copy file content from tmp to final to avoid flooding file events in the watcher
 	input, err := os.ReadFile(outputTmpFilePath)
 	utils.CheckError(err)
