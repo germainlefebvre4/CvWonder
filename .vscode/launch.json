@@ -14,7 +14,7 @@
                 // "--input=cv.yml",
                 // "--output=generated/",
                 // "--theme=default",
-                // "--format=pdf",
+                "--format=pdf",
                 // "--watch",
                 // "--verbose",
 

@@ -2,6 +2,7 @@ package render_html
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 	"text/template"
 
@@ -97,7 +98,10 @@ func NewRenderHTMLServicesTest() RenderHTMLServices {
 
 func TestRenderFormatHTML(t *testing.T) {
 	testDirectory, _ := os.Getwd()
-	baseDirectory := testDirectory + "/../../.."
+	baseDirectory, err := filepath.Abs(testDirectory + "/../../..")
+	if err != nil {
+		t.Fatal(err)
+	}
 	type fields struct {
 		RenderHTMLService RenderHTMLServices
 	}
@@ -182,7 +186,10 @@ func TestGetTemplateFunctions(t *testing.T) {
 
 func TestGenerateTemplateFile(t *testing.T) {
 	testDirectory, _ := os.Getwd()
-	baseDirectory := testDirectory + "/../../.."
+	baseDirectory, err := filepath.Abs(testDirectory + "/../../..")
+	if err != nil {
+		t.Fatal(err)
+	}
 	type fields struct {
 		RenderHTMLService RenderHTMLServices
 	}
@@ -245,7 +252,10 @@ func TestGenerateTemplateFile(t *testing.T) {
 
 func TestCopyTemplateFileContent(t *testing.T) {
 	testDirectory, _ := os.Getwd()
-	baseDirectory := testDirectory + "/../../.."
+	baseDirectory, err := filepath.Abs(testDirectory + "/../../..")
+	if err != nil {
+		t.Fatal(err)
+	}
 	type args struct {
 		src string
 		dst string

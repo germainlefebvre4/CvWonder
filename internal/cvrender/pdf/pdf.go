@@ -17,30 +17,45 @@ func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string,
 	logrus.Debug("Generating PDF")
 
 	// Output file
-	outputDirectory, err := filepath.Abs(outputDirectory)
-	utils.CheckError(err)
-	outputFilename := filepath.Base(inputFilename) + ".pdf"
-	outputFilePath := outputDirectory + "/" + outputFilename
-	w, err := os.Create(outputFilePath)
-	utils.CheckError(err)
-	defer w.Close()
-
-	localServerUrl := fmt.Sprintf("http://localhost:%d/%s.html", utils.CliArgs.Port, inputFilename)
+	outputFilePath := r.generateOutputFile(outputDirectory, inputFilename)
 
 	// Run the server to output the HTML
-	logrus.Info("Serve temporary the CV on server at address ", localServerUrl)
-	go func() {
-		cvserve.StartServer(outputDirectory)
+	localServerUrl := r.runWebServer(inputFilename, outputDirectory)
 
-	}()
 	// Open the browser and convert the page to PDF
-	err = rod.Try(func() {
+	r.convertPageToPDF(localServerUrl, outputFilePath)
+
+	return nil
+}
+
+func (*RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath string) {
+	err := rod.Try(func() {
 		rod.New().MustConnect().MustPage(localServerUrl).MustWaitLoad().MustPDF(outputFilePath)
 	})
 	if err != nil {
 		message := fmt.Sprintf("ERROR: Failed to connect to the server %s", localServerUrl)
 		logrus.Fatal(message)
 	}
+}
 
-	return nil
+func (*RenderPDFServices) runWebServer(inputFilename string, outputDirectory string) string {
+	localServerUrl := fmt.Sprintf("http://localhost:%d/%s.html", utils.CliArgs.Port, inputFilename)
+	logrus.Info("Serve temporary the CV on server at address ", localServerUrl)
+	go func() {
+		cvserve.StartServer(outputDirectory)
+
+	}()
+	return localServerUrl
+}
+
+func (*RenderPDFServices) generateOutputFile(outputDirectory string, inputFilename string) string {
+	outputDirectory, err := filepath.Abs(outputDirectory)
+	utils.CheckError(err)
+	outputFilename := filepath.Base(inputFilename) + ".pdf"
+	outputFilePath, err := filepath.Abs(outputDirectory + "/" + outputFilename)
+	utils.CheckError(err)
+	w, err := os.Create(outputFilePath)
+	utils.CheckError(err)
+	defer w.Close()
+	return outputFilePath
 }
