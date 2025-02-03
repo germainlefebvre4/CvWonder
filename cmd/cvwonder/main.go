@@ -120,7 +120,9 @@ func main() {
 			utils.CheckError(err)
 
 			if utils.CliArgs.Watch {
-				go watcher.ObserveFileEvents(renderService, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
+				watcherService, err := watcher.NewWatcherServices()
+				utils.CheckError(err)
+				go watcherService.ObserveFileEvents(renderService, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			}
 			// Serve the CV
 			serveService, err := cvserve.NewServeServices()

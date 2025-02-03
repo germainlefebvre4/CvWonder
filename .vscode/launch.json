@@ -15,7 +15,7 @@
                 // "--output=generated/",
                 // "--theme=default",
                 // "--format=pdf",
-                // "--watch",
+                "--watch",
                 // "--verbose",
 
                 // "themes",

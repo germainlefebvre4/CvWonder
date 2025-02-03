@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func ObserveFileEvents(renderService cvrender.RenderInterface, baseDirectory string, outputDirectory string, inputFilePath string, themeName string, exportFormat string) {
+func (w *WatcherServices) ObserveFileEvents(renderService cvrender.RenderInterface, baseDirectory string, outputDirectory string, inputFilePath string, themeName string, exportFormat string) {
 	// setup watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
