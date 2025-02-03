@@ -14,7 +14,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func StartLiveReloader(outputDirectory string, inputFilePath string) {
+func (s *ServeServices) StartLiveReloader(port int, outputDirectory string, inputFilePath string) {
+	// Default parameters
+	if port == 0 {
+		port = 8080
+	}
+
 	// Input file
 	inputFilenameExt := path.Base(inputFilePath)
 	inputFilename := inputFilenameExt[:len(inputFilenameExt)-len(path.Ext(inputFilenameExt))]
@@ -54,12 +59,16 @@ func StartLiveReloader(outputDirectory string, inputFilePath string) {
 	}
 
 	// Start serving html
-	StartServer(outputDirectory)
+	s.StartServer(port, outputDirectory)
 }
 
-func StartServer(outputDirectory string) {
-	logrus.Debug(fmt.Sprintf("Listening on: http://localhost:%d", utils.CliArgs.Port))
+func (s *ServeServices) StartServer(port int, outputDirectory string) {
+	if port == 0 {
+		port = 8080
+	}
+
+	logrus.Debug(fmt.Sprintf("Listening on: http://localhost:%d", port))
 	http.Handle("/", http.FileServer(http.Dir(outputDirectory)))
-	listeningPort := fmt.Sprintf(":%d", utils.CliArgs.Port)
+	listeningPort := fmt.Sprintf(":%d", port)
 	http.ListenAndServe(listeningPort, nil)
 }

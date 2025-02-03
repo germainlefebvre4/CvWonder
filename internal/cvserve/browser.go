@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func OpenBrowser(outputDirectory string, inputFilePath string) {
+func (s *ServeServices) OpenBrowser(outputDirectory string, inputFilePath string) {
 	logrus.Debug("Opening browser")
 
 	// Input file

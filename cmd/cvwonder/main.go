@@ -122,8 +122,11 @@ func main() {
 			if utils.CliArgs.Watch {
 				go watcher.ObserveFileEvents(renderService, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			}
-			cvserve.OpenBrowser(outputDir.FullPath, inputFile.FullPath)
-			cvserve.StartLiveReloader(outputDir.FullPath, inputFile.FullPath)
+			// Serve the CV
+			serveService, err := cvserve.NewServeServices()
+			utils.CheckError(err)
+			serveService.OpenBrowser(outputDir.FullPath, inputFile.FullPath)
+			serveService.StartLiveReloader(utils.CliArgs.Port, outputDir.FullPath, inputFile.FullPath)
 		},
 	}
 

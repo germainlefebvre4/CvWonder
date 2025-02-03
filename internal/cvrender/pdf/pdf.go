@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/germainlefebvre4/cvwonder/internal/cvserve"
 	"github.com/germainlefebvre4/cvwonder/internal/model"
 	"github.com/germainlefebvre4/cvwonder/internal/utils"
 
@@ -28,7 +27,7 @@ func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string,
 	return nil
 }
 
-func (*RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath string) {
+func (r *RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath string) {
 	err := rod.Try(func() {
 		rod.New().MustConnect().MustPage(localServerUrl).MustWaitLoad().MustPDF(outputFilePath)
 	})
@@ -38,7 +37,7 @@ func (*RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath
 	}
 }
 
-func (*RenderPDFServices) runWebServer(port int, inputFilename string, outputDirectory string) string {
+func (r *RenderPDFServices) runWebServer(port int, inputFilename string, outputDirectory string) string {
 	if port == 0 {
 		port = 8080
 	}
@@ -46,13 +45,13 @@ func (*RenderPDFServices) runWebServer(port int, inputFilename string, outputDir
 	localServerUrl := fmt.Sprintf("http://localhost:%d/%s.html", port, inputFilename)
 	logrus.Info("Serve temporary the CV on server at address ", localServerUrl)
 	go func() {
-		cvserve.StartServer(outputDirectory)
+		r.ServeService.StartServer(port, outputDirectory)
 
 	}()
 	return localServerUrl
 }
 
-func (*RenderPDFServices) generateOutputFile(outputDirectory string, inputFilename string) string {
+func (r *RenderPDFServices) generateOutputFile(outputDirectory string, inputFilename string) string {
 	outputDirectory, err := filepath.Abs(outputDirectory)
 	utils.CheckError(err)
 	outputFilename := filepath.Base(inputFilename) + ".pdf"
