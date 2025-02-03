@@ -56,7 +56,10 @@ func main() {
 			logrus.Info("  Format: ", utils.CliArgs.Format)
 			logrus.Info("")
 
-			content, err := cvparser.ParseFile(inputFile.FullPath)
+			// Parse the CV
+			perserService, err := cvparser.NewParserServices()
+			utils.CheckError(err)
+			content, err := perserService.ParseFile(inputFile.FullPath)
 			utils.CheckError(err)
 
 			// Create render services
@@ -102,7 +105,10 @@ func main() {
 			logrus.Info("  Watch: ", utils.CliArgs.Watch)
 			logrus.Info()
 
-			content, err := cvparser.ParseFile(inputFile.FullPath)
+			// Parse the CV
+			perserService, err := cvparser.NewParserServices()
+			utils.CheckError(err)
+			content, err := perserService.ParseFile(inputFile.FullPath)
 			utils.CheckError(err)
 
 			// Create render services
