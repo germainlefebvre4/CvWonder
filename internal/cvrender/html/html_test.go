@@ -32,7 +32,7 @@ var CvTest = model.CV{
 			Tr: "I am a dummy Software Engineer for test.",
 		},
 	},
-	Career: model.Career{
+	Career: []model.Career{
 		{
 			CompanyName: "Company",
 			CompanyLogo: "logo.png",
