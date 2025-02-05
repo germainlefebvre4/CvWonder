@@ -1,6 +1,7 @@
 package cvparser
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/germainlefebvre4/cvwonder/internal/model"
@@ -33,6 +34,8 @@ func (p *ParserServices) convertFileContentToStruct(content []byte) (model.CV, e
 
 func (p *ParserServices) readFile(filePath string) ([]byte, error) {
 	content, err := os.ReadFile(filePath)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error while reading file: %s", filePath))
+	}
 	return content, err
 }
