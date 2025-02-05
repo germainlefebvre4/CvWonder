@@ -6,6 +6,8 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/mozillazg/go-slugify"
 	"github.com/sirupsen/logrus"
+
+	theme_config "github.com/germainlefebvre4/cvwonder/internal/themes/config"
 )
 
 func (t *ThemesService) Create(themeName string) {
@@ -27,7 +29,7 @@ func (t *ThemesService) Create(themeName string) {
 }
 
 func createThemeConfig(themeName string, themeSlugName string) {
-	themeConfig := ThemeConfig{
+	themeConfig := theme_config.ThemeConfig{
 		Name:        themeName,
 		Slug:        themeSlugName,
 		Description: "Description of the new theme.",
@@ -39,7 +41,7 @@ func createThemeConfig(themeName string, themeSlugName string) {
 	}
 }
 
-func createThemeConfigFile(filePath string, themeConfig ThemeConfig) error {
+func createThemeConfigFile(filePath string, themeConfig theme_config.ThemeConfig) error {
 	// Create theme.yaml file
 	file, err := os.Create(filePath)
 	if err != nil {

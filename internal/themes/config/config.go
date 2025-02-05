@@ -1,4 +1,4 @@
-package themes
+package theme_config
 
 import (
 	"context"

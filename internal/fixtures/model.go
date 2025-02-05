@@ -1,6 +1,8 @@
 package fixtures
 
-import "github.com/germainlefebvre4/cvwonder/internal/model"
+import (
+	"github.com/germainlefebvre4/cvwonder/internal/model"
+)
 
 var CvYamlGood01 = []byte(`
 person:

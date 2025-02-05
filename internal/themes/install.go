@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	theme_config "github.com/germainlefebvre4/cvwonder/internal/themes/config"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/sirupsen/logrus"
 )
@@ -43,7 +45,7 @@ func isGitHubURL(input string) bool {
 	return host == "github.com"
 }
 
-func parseGitHubURL(themeURL string) GithubRepo {
+func parseGitHubURL(themeURL string) theme_config.GithubRepo {
 	logrus.Debug("Parse GitHub URL")
 	formattedURL := fmt.Sprintf("%s%s", "https://", strings.ReplaceAll(themeURL, "https://", ""))
 	URL, err := url.Parse(formattedURL)
@@ -51,13 +53,13 @@ func parseGitHubURL(themeURL string) GithubRepo {
 		logrus.Error("Error parsing URL")
 	}
 	path := strings.Split(URL.Path, "/")
-	return GithubRepo{URL: URL, Owner: path[1], Name: path[2]}
+	return theme_config.GithubRepo{URL: URL, Owner: path[1], Name: path[2]}
 }
 
-func downloadTheme(githubRepo GithubRepo) {
+func downloadTheme(githubRepo theme_config.GithubRepo) {
 	logrus.Debug("Download theme")
 
-	themeConfig := GetThemeConfigFromURL(githubRepo)
+	themeConfig := theme_config.GetThemeConfigFromURL(githubRepo)
 
 	themeDirectory := fmt.Sprintf("themes/%s", themeConfig.Slug)
 	if _, err := os.Stat(themeDirectory); !os.IsNotExist(err) {
