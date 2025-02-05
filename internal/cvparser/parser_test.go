@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cvByteGiven = []byte(`
+var cvByteGiven01 = []byte(`
 person:
-  name: Germain Lefebvre
+  name: John Doe
 `)
 
-var cvYamlWanted = model.CV{
+var cvYamlWanted01 = model.CV{
 	Person: model.Person{
-		Name: "Germain Lefebvre",
+		Name: "John Doe",
 	},
 }
 
@@ -36,9 +36,9 @@ func TestConvertFileContentToStruct(t *testing.T) {
 			name: "Should return a model.CV",
 			p:    &ParserServices{},
 			args: args{
-				content: cvByteGiven,
+				content: cvByteGiven01,
 			},
-			want:    cvYamlWanted,
+			want:    cvYamlWanted01,
 			wantErr: false,
 		},
 	}
@@ -63,7 +63,7 @@ func TestParseFile(t *testing.T) {
 
 	// Mocks
 	mock := &mocks.ParserInterfaceMock{}
-	mock.On("ParseFile", "test").Return(cvYamlWanted, nil)
+	mock.On("ParseFile", "test").Return(cvYamlWanted01, nil)
 
 	type args struct {
 		filePath string
@@ -81,7 +81,7 @@ func TestParseFile(t *testing.T) {
 			args: args{
 				filePath: baseDirectory + "/generated-test/TestStartLiveReloader.yaml",
 			},
-			want:    cvYamlWanted,
+			want:    cvYamlWanted01,
 			wantErr: false,
 		},
 	}
@@ -93,7 +93,7 @@ func TestParseFile(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
-		err := os.WriteFile(baseDirectory+"/generated-test/TestStartLiveReloader.yaml", []byte(cvByteGiven), os.ModePerm)
+		err := os.WriteFile(baseDirectory+"/generated-test/TestStartLiveReloader.yaml", []byte(cvByteGiven01), os.ModePerm)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -106,6 +106,63 @@ func TestParseFile(t *testing.T) {
 			}
 			assert.Equal(t, tt.want, got)
 			assert.Nil(t, err)
+		})
+
+		// Clean
+		err = os.RemoveAll(baseDirectory + "/generated-test")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	testDirectory, _ := os.Getwd()
+	baseDirectory, err := filepath.Abs(testDirectory + "/../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type args struct {
+		filePath string
+	}
+	tests := []struct {
+		name    string
+		p       *ParserServices
+		args    args
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "Should return a file content",
+			p:    &ParserServices{},
+			args: args{
+				filePath: baseDirectory + "/generated-test/TestReadFile.yaml",
+			},
+			want:    []byte(cvByteGiven01),
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		// Prepare
+		if _, err := os.Stat(baseDirectory + "/generated-test"); os.IsNotExist(err) {
+			err := os.Mkdir(baseDirectory+"/generated-test", os.ModePerm)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+		err := os.WriteFile(baseDirectory+"/generated-test/TestReadFile.yaml", tt.want, os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.p.readFile(tt.args.filePath)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("readFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			assert.Equal(t, tt.want, got)
 		})
 
 		// Clean
