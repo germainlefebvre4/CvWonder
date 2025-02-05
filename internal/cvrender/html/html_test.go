@@ -102,6 +102,7 @@ func TestRenderFormatHTML(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	type fields struct {
 		RenderHTMLService RenderHTMLServices
 	}
@@ -126,14 +127,31 @@ func TestRenderFormatHTML(t *testing.T) {
 				baseDirectory:   baseDirectory,
 				outputDirectory: baseDirectory + "/generated-test",
 				inputFilename:   "cv",
-				themeName:       "default",
+				themeName:       "test",
 			},
 			wantErr: nil,
 		},
 	}
+	// Create the test theme
+	if _, err := os.Stat(baseDirectory + "/themes/test"); os.IsNotExist(err) {
+		err := os.Mkdir(baseDirectory+"/themes/test", os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	for _, tt := range tests {
 		// Prepare
-		// TODO: Add theme files
+		// Create the theme template file
+		if _, err := os.Stat(baseDirectory + "/themes/test"); os.IsNotExist(err) {
+			err := os.Mkdir(baseDirectory+"/themes/test", os.ModePerm)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+		err = os.WriteFile(baseDirectory+"/themes/test/index.html", []byte("{{ .Person.Name }}"), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		// Run test
 		t.Run(tt.name, func(t *testing.T) {
@@ -151,10 +169,14 @@ func TestRenderFormatHTML(t *testing.T) {
 		})
 
 		// Clean
-		// err := os.RemoveAll(tt.args.outputDirectory)
-		// if err != nil {
-		// 	t.Fatal(err)
-		// }
+		err = os.RemoveAll(tt.args.outputDirectory)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	err = os.RemoveAll(baseDirectory + "/themes/test")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
