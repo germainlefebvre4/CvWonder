@@ -43,18 +43,6 @@ func TestStartLiveReloader(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		// Prepare
-		if _, err := os.Stat(baseDirectory + "/generated-test"); os.IsNotExist(err) {
-			err := os.Mkdir(baseDirectory+"/generated-test", os.ModePerm)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
-		err := os.WriteFile(baseDirectory+"/generated-test/TestStartLiveReloader.html", []byte("TestRunWebServer"), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
 		// Run test
 		t.Run("Should start live reloader", func(t *testing.T) {
 			// Prepare
