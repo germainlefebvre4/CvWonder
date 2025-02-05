@@ -32,7 +32,9 @@ func CmdList() *cobra.Command {
 		Short:   "List themes",
 		Long:    `List themes`,
 		Run: func(cmd *cobra.Command, args []string) {
-			themes.List()
+			themesService, err := themes.NewThemesService()
+			utils.CheckError(err)
+			themesService.List()
 		},
 	}
 
@@ -48,7 +50,9 @@ func CmdInstall() *cobra.Command {
 		Short:   "Install theme",
 		Long:    `Install theme`,
 		Run: func(cmd *cobra.Command, args []string) {
-			themes.Install(args[0])
+			themesService, err := themes.NewThemesService()
+			utils.CheckError(err)
+			themesService.Install(args[0])
 		},
 	}
 
@@ -63,9 +67,11 @@ func CmdCreate() *cobra.Command {
 		Short:   "Create a new theme",
 		Long:    `Create a new theme`,
 		Run: func(cmd *cobra.Command, args []string) {
+			themesService, err := themes.NewThemesService()
+			utils.CheckError(err)
 			themeName := strings.ReplaceAll(utils.CliArgs.CreateThemeName, "'", "")
 			themeName = strings.ReplaceAll(themeName, "\"", "")
-			themes.Create(themeName)
+			themesService.Create(themeName)
 		},
 	}
 

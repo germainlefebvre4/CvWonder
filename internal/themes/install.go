@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Install(themeURL string) {
+func (t *ThemesService) Install(themeURL string) {
 	logrus.Debug("Install")
 	verifyTheme(themeURL)
 	githubRepo := parseGitHubURL(themeURL)

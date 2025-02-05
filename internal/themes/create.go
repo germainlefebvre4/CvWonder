@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Create(themeName string) {
+func (t *ThemesService) Create(themeName string) {
 	logrus.Debug("Create")
 	themeSlugName := slugify.Slugify(themeName)
 

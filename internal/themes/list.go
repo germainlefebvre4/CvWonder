@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func List() {
+func (t *ThemesService) List() {
 	logrus.Debug("List themes")
 
 	// List directories in themes directory
