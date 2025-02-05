@@ -1,0 +1,29 @@
+---
+issue-845-fix: True
+disable-version-string: true
+with-expecter: true
+all: True
+dir: "{{.InterfaceDir}}"
+mockname: "{{.InterfaceName}}Mock"
+outpkg: "{{.PackageName}}"
+filename: "mocks/mock_{{.InterfaceName}}.go"
+inpackage: True
+packages:
+  github.com/germainlefebvre4/cvwonder/internal/cvparser:
+    interfaces:
+      ParserInterface:
+  github.com/germainlefebvre4/cvwonder/internal/cvrender:
+    interfaces:
+      RenderInterface:
+  github.com/germainlefebvre4/cvwonder/internal/cvrender/html:
+    interfaces:
+      RenderHTMLInterface:
+  github.com/germainlefebvre4/cvwonder/internal/cvrender/pdf:
+    interfaces:
+      RenderPDFInterface:
+  github.com/germainlefebvre4/cvwonder/internal/cvserve:
+    interfaces:
+      ServeInterface:
+  github.com/germainlefebvre4/cvwonder/internal/watcher:
+    interfaces:
+      WatcherInterface:
