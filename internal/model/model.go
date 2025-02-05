@@ -8,7 +8,7 @@ type CV struct {
 	Person          Person          `yaml:"person"`
 	SocialNetworks  SocialNetworks  `yaml:"socialNetworks"`
 	Abstract        []Abstract      `yaml:"abstract"`
-	Career          Career          `yaml:"career"`
+	Career          []Career        `yaml:"career"`
 	TechnicalSkills TechnicalSkills `yaml:"technicalSkills"`
 	SideProjects    []SideProject   `yaml:"sideProjects"`
 	Certifications  []Certification `yaml:"certifications"`
@@ -28,6 +28,7 @@ type Person struct {
 	Citizenship string `yaml:"citizenship"`
 	Email       string `yaml:"email"`
 	Site        string `yaml:"site"`
+	Phone       string `yaml:"phone"`
 }
 
 type SocialNetworks struct {
@@ -41,7 +42,7 @@ type Abstract struct {
 	Tr string `yaml:"tr"`
 }
 
-type Career []struct {
+type Career struct {
 	CompanyName string    `yaml:"companyName"`
 	CompanyLogo string    `yaml:"companyLogo"`
 	Duration    string    `yaml:"duration,omitempty"`

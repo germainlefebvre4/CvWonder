@@ -24,7 +24,10 @@ func (p *ParserServices) ParseFile(filePath string) (model.CV, error) {
 func (p *ParserServices) convertFileContentToStruct(content []byte) (model.CV, error) {
 	cvOutput := model.CV{}
 	err := yaml.Unmarshal([]byte(content), &cvOutput)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Error("Error while unmarshalling YAML file")
+		return model.CV{}, err
+	}
 	return cvOutput, err
 }
 
