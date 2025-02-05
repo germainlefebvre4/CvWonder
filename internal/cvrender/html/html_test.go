@@ -145,7 +145,7 @@ func TestGenerateTemplateFile(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		wantErr error
+		wantErr bool
 	}{
 		{
 			name:   "Should generate template file",
@@ -157,7 +157,7 @@ func TestGenerateTemplateFile(t *testing.T) {
 				outputTmpFilePath: baseDirectory + "/generated-test/cv.html.tmp",
 				cv:                fixtures.CvModelGood01,
 			},
-			wantErr: nil,
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -167,17 +167,7 @@ func TestGenerateTemplateFile(t *testing.T) {
 		// Run test
 		t.Run(tt.name, func(t *testing.T) {
 			service := NewRenderHTMLServicesTest()
-			assert.Equalf(
-				t,
-				tt.wantErr,
-				service.generateTemplateFile(tt.args.themeDirectory, tt.args.outputDirectory, tt.args.outputFilePath, tt.args.outputTmpFilePath, tt.args.cv),
-				"generateTemplateFile(%v, %v, %v, %v, %v)",
-				tt.args.themeDirectory,
-				tt.args.outputDirectory,
-				tt.args.outputFilePath,
-				tt.args.outputTmpFilePath,
-				tt.args.cv,
-			)
+			service.generateTemplateFile(tt.args.themeDirectory, tt.args.outputDirectory, tt.args.outputFilePath, tt.args.outputTmpFilePath, tt.args.cv)
 			assert.DirExists(t, tt.args.outputDirectory)
 			assert.FileExists(t, tt.args.outputFilePath)
 			assert.FileExists(t, tt.args.outputTmpFilePath)

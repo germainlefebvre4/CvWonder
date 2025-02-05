@@ -2,6 +2,7 @@ package render_html
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,14 +22,15 @@ func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, baseDirectory string,
 
 	// Output file
 	outputDirectory, err := filepath.Abs(outputDirectory)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(err)
+	}
 	outputFilename := filepath.Base(inputFilename) + ".html"
 	outputFilePath := filepath.Join(outputDirectory, outputFilename)
 	outputTmpFilePath := outputFilePath + ".tmp"
 
 	// Generate template file
-	err = r.generateTemplateFile(themeDirectory, outputDirectory, outputFilePath, outputTmpFilePath, cv)
-	utils.CheckError(err)
+	r.generateTemplateFile(themeDirectory, outputDirectory, outputFilePath, outputTmpFilePath, cv)
 
 	// Copy template file to output directory
 	err = copyTemplateFileContent(outputTmpFilePath, outputFilePath)
@@ -50,27 +52,35 @@ func getTemplateFunctions() template.FuncMap {
 	return funcMap
 }
 
-func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputDirectory string, outputFilePath string, outputTmpFilePath string, cv model.CV) error {
+func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputDirectory string, outputFilePath string, outputTmpFilePath string, cv model.CV) {
 	// Inject custom functions in template
 	funcMap := getTemplateFunctions()
 
 	// Template file
 	tmplFile := themeDirectory + "/index.html"
 	tmpl, err := template.New("index.html").Funcs(funcMap).ParseFiles(tmplFile)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error parsing template file: %s", tmplFile), err)
+	}
 
 	// Create output file and directory
 	if _, err := os.Stat(outputDirectory); errors.Is(err, os.ErrNotExist) {
 		err = os.MkdirAll(outputDirectory, os.ModePerm)
-		utils.CheckError(err)
+		if err != nil {
+			logrus.Fatal(fmt.Sprintf("Error creating output directory: %s", outputDirectory), err)
+		}
 	}
 	outputFile, err := os.Create(outputFilePath)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error creating output file: %s", outputFilePath), err)
+	}
 	defer outputFile.Close()
 	var outputTmpFile *os.File
 	if _, err := os.Stat(outputTmpFilePath); errors.Is(err, os.ErrNotExist) {
 		outputTmpFile, err = os.Create(outputTmpFilePath)
-		utils.CheckError(err)
+		if err != nil {
+			logrus.Fatal(fmt.Sprintf("Error creating output tmp file: %s", outputTmpFilePath), err)
+		}
 		defer outputTmpFile.Close()
 	}
 
@@ -78,13 +88,13 @@ func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputD
 	err = tmpl.ExecuteTemplate(outputTmpFile, "index.html", cv)
 	if err != nil {
 		errFile := os.Remove(outputTmpFilePath)
-		utils.CheckError(errFile)
+		if errFile != nil {
+			logrus.Fatal(fmt.Sprintf("Error removing output tmp file: %s", outputTmpFilePath), errFile)
+		}
 		logrus.Fatal(err)
 	}
 
 	logrus.Debug("HTML file generated at:", outputFilePath)
-
-	return nil
 }
 
 func copyTemplateFileContent(outputTmpFilePath string, outputFilePath string) error {
