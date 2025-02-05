@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string, inputFilename string, themeName string) error {
+func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string, inputFilename string, themeName string) {
 	logrus.Debug("Generating PDF")
 
 	// Output file
@@ -23,8 +23,6 @@ func (r *RenderPDFServices) RenderFormatPDF(cv model.CV, outputDirectory string,
 
 	// Open the browser and convert the page to PDF
 	r.convertPageToPDF(localServerUrl, outputFilePath)
-
-	return nil
 }
 
 func (r *RenderPDFServices) convertPageToPDF(localServerUrl string, outputFilePath string) {

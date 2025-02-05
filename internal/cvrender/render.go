@@ -39,7 +39,6 @@ func (r *RenderServices) Render(cv model.CV, baseDirectory string, outputDirecto
 
 	if exportFormat == "pdf" {
 		// Generate PDF
-		err := r.RenderPDFService.RenderFormatPDF(cv, outputDirectory, inputFilename, themeName)
-		utils.CheckError(err)
+		r.RenderPDFService.RenderFormatPDF(cv, outputDirectory, inputFilename, themeName)
 	}
 }

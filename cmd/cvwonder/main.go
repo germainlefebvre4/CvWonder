@@ -63,9 +63,11 @@ func main() {
 			utils.CheckError(err)
 
 			// Create render services
+			serveService, err := cvserve.NewServeServices()
+			utils.CheckError(err)
 			renderHTMLService, err := render_html.NewRenderHTMLServices()
 			utils.CheckError(err)
-			renderPDFService, err := render_pdf.NewRenderPDFServices()
+			renderPDFService, err := render_pdf.NewRenderPDFServices(serveService)
 			utils.CheckError(err)
 			renderService, err := cvrender.NewRenderServices(renderHTMLService, renderPDFService)
 			utils.CheckError(err)
@@ -112,9 +114,11 @@ func main() {
 			utils.CheckError(err)
 
 			// Create render services
+			serveService, err := cvserve.NewServeServices()
+			utils.CheckError(err)
 			renderHTMLService, err := render_html.NewRenderHTMLServices()
 			utils.CheckError(err)
-			renderPDFService, err := render_pdf.NewRenderPDFServices()
+			renderPDFService, err := render_pdf.NewRenderPDFServices(serveService)
 			utils.CheckError(err)
 			renderService, err := cvrender.NewRenderServices(renderHTMLService, renderPDFService)
 			utils.CheckError(err)
@@ -131,8 +135,6 @@ func main() {
 				go watcherService.ObserveFileEvents(renderService, baseDirectory, outputDir.FullPath, inputFile.FullPath, utils.CliArgs.ThemeName, utils.CliArgs.Format)
 			}
 			// Serve the CV
-			serveService, err := cvserve.NewServeServices()
-			utils.CheckError(err)
 			serveService.OpenBrowser(outputDir.FullPath, inputFile.FullPath)
 			serveService.StartLiveReloader(utils.CliArgs.Port, outputDir.FullPath, inputFile.FullPath)
 		},
