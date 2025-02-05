@@ -3,6 +3,7 @@ package themes
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/tabwriter"
 
@@ -11,9 +12,17 @@ import (
 
 func (t *ThemesService) List() {
 	logrus.Debug("List themes")
+	themeDir := "themes"
 
 	// List directories in themes directory
-	dirs, err := os.ReadDir("themes")
+	listThemes(themeDir)
+}
+
+func listThemes(themeDir string) {
+	if themeDir == "" {
+		themeDir = "themes"
+	}
+	dirs, err := os.ReadDir(themeDir)
 	if err != nil {
 		logrus.Fatal("Error reading themes directory: ", err)
 	}
@@ -26,11 +35,11 @@ func (t *ThemesService) List() {
 	// Table body
 	for _, dir := range dirs {
 		if dir.IsDir() {
-			printRow(dir, output)
+			printRow(themeDir, dir, output)
 			continue
 		} else if dir.Type() == os.ModeSymlink {
-			if _, err := os.Stat("themes/" + dir.Name()); err == nil {
-				printRow(dir, output)
+			if _, err := os.Stat(filepath.Join(themeDir, dir.Name())); err == nil {
+				printRow(themeDir, dir, output)
 			} else {
 				logrus.Warn("Symlink to non-existing directory: ", dir.Name())
 			}
@@ -40,7 +49,7 @@ func (t *ThemesService) List() {
 	}
 }
 
-func printRow(dir os.DirEntry, output *tabwriter.Writer) {
-	themeConfig := GetThemeConfigFromDir("themes/" + dir.Name())
+func printRow(themeDir string, dir os.DirEntry, output *tabwriter.Writer) {
+	themeConfig := GetThemeConfigFromDir(filepath.Join(themeDir, dir.Name()))
 	fmt.Fprintf(output, "%s\t%s\t%s\t%s\n", themeConfig.Slug, themeConfig.Name, themeConfig.Description, themeConfig.Author)
 }
