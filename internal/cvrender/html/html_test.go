@@ -192,14 +192,12 @@ func TestCopyTemplateFileContent(t *testing.T) {
 		dst string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr error
+		name string
+		args args
 	}{
 		{
-			name:    "Should copy template file content",
-			args:    args{baseDirectory + "/generated-test/TestCopyTemplateFileContent.test.tmp", baseDirectory + "/generated-test/TestCopyTemplateFileContent.test"},
-			wantErr: nil,
+			name: "Should copy template file content",
+			args: args{baseDirectory + "/generated-test/TestCopyTemplateFileContent.test.tmp", baseDirectory + "/generated-test/TestCopyTemplateFileContent.test"},
 		},
 	}
 	for _, tt := range tests {
@@ -210,36 +208,37 @@ func TestCopyTemplateFileContent(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
-		err := os.WriteFile(tt.args.src, []byte("test"), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-		f1, err1 := os.ReadFile(tt.args.src)
-		if err1 != nil {
-			t.Fatal(err1)
-		}
 
 		// Run test
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(
-				t,
-				tt.wantErr,
-				copyTemplateFileContent(tt.args.src, tt.args.dst),
-				"copyTemplateFileContent(%v, %v)",
-				tt.args.src,
-				tt.args.dst,
-			)
+			// Prepare
+			err := os.WriteFile(tt.args.src, []byte("test"), os.ModePerm)
+			if err != nil {
+				t.Fatal(err)
+			}
+			f1, err1 := os.ReadFile(tt.args.src)
+			if err1 != nil {
+				t.Fatal(err1)
+			}
+
+			copyTemplateFileContent(tt.args.src, tt.args.dst)
+			assert.FileExists(t, tt.args.dst)
+
+			f2, err2 := os.ReadFile(tt.args.dst)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			assert.Equal(t, f1, f2)
+
+			// Clean
+			err = os.Remove(tt.args.dst)
+			if err != nil {
+				t.Fatal(err)
+			}
 		})
-		assert.FileExists(t, tt.args.dst)
 
 		// Clean
-		f2, err2 := os.ReadFile(tt.args.dst)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		assert.Equal(t, f1, f2)
-
-		err = os.Remove(tt.args.dst)
+		err = os.RemoveAll(baseDirectory + "/generated-test")
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -33,12 +33,13 @@ func (r *RenderHTMLServices) RenderFormatHTML(cv model.CV, baseDirectory string,
 	r.generateTemplateFile(themeDirectory, outputDirectory, outputFilePath, outputTmpFilePath, cv)
 
 	// Copy template file to output directory
-	err = copyTemplateFileContent(outputTmpFilePath, outputFilePath)
-	utils.CheckError(err)
+	copyTemplateFileContent(outputTmpFilePath, outputFilePath)
 
 	// Copy theme assets to output directory
 	err = utils.CopyDirectory(themeDirectory, outputDirectory)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error copying theme assets from: %s to: %s", themeDirectory, outputDirectory), err)
+	}
 
 	return err
 }
@@ -97,16 +98,20 @@ func (r *RenderHTMLServices) generateTemplateFile(themeDirectory string, outputD
 	logrus.Debug("HTML file generated at:", outputFilePath)
 }
 
-func copyTemplateFileContent(outputTmpFilePath string, outputFilePath string) error {
+func copyTemplateFileContent(outputTmpFilePath string, outputFilePath string) {
 	// Note: Copy file content from tmp to final to avoid flooding file events in the watcher
 	input, err := os.ReadFile(outputTmpFilePath)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error reading output tmp file: %s", outputTmpFilePath), err)
+	}
 	err = os.WriteFile(outputFilePath, input, 0644)
-	utils.CheckError(err)
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error writing output file: %s", outputFilePath), err)
+	}
 
 	// Clean the tmp file
 	err = os.Remove(outputTmpFilePath)
-	utils.CheckError(err)
-
-	return nil
+	if err != nil {
+		logrus.Fatal(fmt.Sprintf("Error removing output tmp file: %s", outputTmpFilePath), err)
+	}
 }
