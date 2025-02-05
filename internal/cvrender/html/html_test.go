@@ -6,91 +6,10 @@ import (
 	"testing"
 	"text/template"
 
+	"github.com/germainlefebvre4/cvwonder/internal/fixtures"
 	"github.com/germainlefebvre4/cvwonder/internal/model"
 	"github.com/stretchr/testify/assert"
 )
-
-var CvTest = model.CV{
-	Company: model.Company{
-		Name: "Company",
-		Logo: "logo.png",
-	},
-	Person: model.Person{
-		Name:        "John Doe",
-		Depiction:   "I am a dummy Software Engineer for test.",
-		Profession:  "Software Engineer",
-		Location:    "Paris",
-		Citizenship: "French",
-		Email:       "john@doe.fr",
-	},
-	SocialNetworks: model.SocialNetworks{
-		Github:        "dummy",
-		Stackoverflow: "dummy",
-	},
-	Abstract: []model.Abstract{
-		{
-			Tr: "I am a dummy Software Engineer for test.",
-		},
-	},
-	Career: []model.Career{
-		{
-			CompanyName: "Company",
-			CompanyLogo: "logo.png",
-			Duration:    "2019 - 2020",
-			Missions: []model.Mission{
-				{
-					Position:     "Software Engineer",
-					Company:      "Company",
-					Location:     "Paris",
-					Dates:        "2019 - 2020",
-					Summary:      "I was a Software Engineer.",
-					Technologies: []string{"Go", "Python"},
-					Description:  []string{"I was a Software Engineer."},
-					Project:      "A project for a dummy company.",
-				},
-			},
-		},
-	},
-	TechnicalSkills: model.TechnicalSkills{
-		Domains: []model.Domain{
-			{
-				Name: "Development",
-				Competencies: []model.Competency{
-					{
-						Name:  "Go",
-						Level: 5,
-					},
-				},
-			},
-		},
-	},
-	SideProjects: []model.SideProject{
-		{
-			Name:        "Project",
-			Description: "A project for a dummy company.",
-		},
-	},
-	Certifications: []model.Certification{
-		{
-			CompanyName:       "CompanyName",
-			CertificationName: "CertificationName",
-			Issuer:            "Issuer",
-			Date:              "Date",
-			Link:              "Link",
-			Badge:             "Badge",
-		},
-	},
-	Education: []model.Education{
-		{
-			SchoolName: "SchoolName",
-			SchoolLogo: "SchoolLogo",
-			Degree:     "Degree",
-			Location:   "Location",
-			Dates:      "Dates",
-			Link:       "Link",
-		},
-	},
-}
 
 func NewRenderHTMLServicesTest() RenderHTMLServices {
 	return RenderHTMLServices{}
@@ -123,7 +42,7 @@ func TestRenderFormatHTML(t *testing.T) {
 			name:   "Should render HTML",
 			fields: fields{NewRenderHTMLServicesTest()},
 			args: args{
-				cv:              CvTest,
+				cv:              fixtures.CvModelGood01,
 				baseDirectory:   baseDirectory,
 				outputDirectory: baseDirectory + "/generated-test",
 				inputFilename:   "cv",
@@ -148,7 +67,7 @@ func TestRenderFormatHTML(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
-		err = os.WriteFile(baseDirectory+"/themes/test/index.html", []byte("{{ .Person.Name }}"), os.ModePerm)
+		err = os.WriteFile(baseDirectory+"/themes/test/index.html", fixtures.CvHtmlTemplate01, os.ModePerm)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -236,7 +155,7 @@ func TestGenerateTemplateFile(t *testing.T) {
 				outputDirectory:   baseDirectory + "/generated-test",
 				outputFilePath:    baseDirectory + "/generated-test/cv.html",
 				outputTmpFilePath: baseDirectory + "/generated-test/cv.html.tmp",
-				cv:                CvTest,
+				cv:                fixtures.CvModelGood01,
 			},
 			wantErr: nil,
 		},
