@@ -26,8 +26,21 @@ func List() {
 	// Table body
 	for _, dir := range dirs {
 		if dir.IsDir() {
-			themeConfig := GetThemeConfigFromDir("themes/" + dir.Name())
-			fmt.Fprintf(output, "%s\t%s\t%s\t%s\n", themeConfig.Slug, themeConfig.Name, themeConfig.Description, themeConfig.Author)
+			printRow(dir, output)
+			continue
+		} else if dir.Type() == os.ModeSymlink {
+			if _, err := os.Stat("themes/" + dir.Name()); err == nil {
+				printRow(dir, output)
+			} else {
+				logrus.Warn("Symlink to non-existing directory: ", dir.Name())
+			}
+		} else {
+			logrus.Warn("Non-directory file in themes directory: ", dir.Name())
 		}
 	}
+}
+
+func printRow(dir os.DirEntry, output *tabwriter.Writer) {
+	themeConfig := GetThemeConfigFromDir("themes/" + dir.Name())
+	fmt.Fprintf(output, "%s\t%s\t%s\t%s\n", themeConfig.Slug, themeConfig.Name, themeConfig.Description, themeConfig.Author)
 }
